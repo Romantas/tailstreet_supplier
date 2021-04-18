@@ -78,7 +78,7 @@ const handleRemove = async (selectedRows: TableListItem[]) => {
   }
 };
 
-const Services: React.FC = () => {
+const Employees: React.FC = () => {
   /** 新建窗口的弹窗 */
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   /** 分布更新窗口的弹窗 */
@@ -95,7 +95,7 @@ const Services: React.FC = () => {
 
   const columns: ProColumns<TableListItem>[] = [
     {
-      title: <FormattedMessage id="service" defaultMessage="Service name" />,
+      title: 'Name',
       dataIndex: 'name',
       render: (dom, entity) => {
         return (
@@ -111,7 +111,7 @@ const Services: React.FC = () => {
       },
     },
     {
-      title: <FormattedMessage id="description" defaultMessage="Description" />,
+      title: 'Experience',
       dataIndex: 'desc',
       valueType: 'textarea',
     },
@@ -320,4 +320,4 @@ const Services: React.FC = () => {
   );
 };
 
-export default Services;
+export default Employees;
