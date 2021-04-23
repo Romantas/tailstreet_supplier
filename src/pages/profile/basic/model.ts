@@ -1,6 +1,6 @@
 import type { Effect, Reducer } from 'umi';
 
-import type { BasicGood } from './data.d';
+import type { BasicGood } from './data';
 import { queryBasicProfile } from './service';
 
 export type StateType = {

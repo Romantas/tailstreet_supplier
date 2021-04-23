@@ -25,7 +25,7 @@ import React, { Component, Fragment } from 'react';
 import classNames from 'classnames';
 import type { Dispatch } from 'umi';
 import { connect } from 'umi';
-import type { AdvancedProfileData } from './data.d';
+import type { AdvancedProfileData } from './data';
 import styles from './style.less';
 
 const { Step } = Steps;

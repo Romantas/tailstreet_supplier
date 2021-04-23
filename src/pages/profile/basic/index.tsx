@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { Dispatch } from 'umi';
 import { connect } from 'umi';
-import type { BasicProfileDataType } from './data.d';
+import type { BasicProfileDataType } from './data';
 import styles from './style.less';
 
 const progressColumns = [

@@ -1,5 +1,5 @@
 import type { Effect, Reducer } from 'umi';
-import type { AdvancedProfileData } from './data.d';
+import type { AdvancedProfileData } from './data';
 import { queryAdvancedProfile } from './service';
 
 export type ModelType = {
