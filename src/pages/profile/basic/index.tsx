@@ -58,7 +58,6 @@ class Basic extends Component<BasicProps, BasicState> {
       type: 'profileAndbasic/fetchBasic',
     });
   }
-
   render() {
     const { profileAndbasic, loading } = this.props;
     const { basicGoods, basicProgress } = profileAndbasic;
@@ -150,6 +149,7 @@ class Basic extends Component<BasicProps, BasicState> {
         },
       },
     ];
+    console.log('work');
     return (
       <PageContainer>
         <Card bordered={false}>
