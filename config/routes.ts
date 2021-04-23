@@ -25,13 +25,7 @@
             routes: [
               {
                 path: '/',
-                redirect: '/dashboard',
-              },
-              {
-                path: '/dashboard',
-                name: 'dashboard',
-                icon: 'smile',
-                component: './Dashboard',
+                redirect: '/services',
               },
               {
                 path: '/admin',
@@ -71,7 +65,7 @@
                 name: 'Company info',
                 icon: 'user',
                 path: '/profile',
-                component: './Profile/advanced',
+                component: './profile/advanced',
               },
             ],
           },
