@@ -54,6 +54,7 @@ const Login: React.FC<LoginProps> = (props) => {
   return (
     <div className={styles.main}>
       <ProForm
+        encType="multipart/form-data"
         initialValues={{
           autoLogin: true,
         }}
