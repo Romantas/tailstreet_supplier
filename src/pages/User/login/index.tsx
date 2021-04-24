@@ -61,6 +61,7 @@ const Login: React.FC<LoginProps> = (props) => {
         submitter={{
           render: (_, dom) => dom.pop(),
           submitButtonProps: {
+            title: 'Login',
             loading: submitting,
             size: 'large',
             style: {
