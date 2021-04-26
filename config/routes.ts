@@ -12,6 +12,11 @@
             path: '/user/login',
             component: './User/login',
           },
+          {
+            name: 'register',
+            path: '/user/register',
+            component: './User/register',
+          },
         ],
       },
       {
@@ -26,22 +31,6 @@
               {
                 path: '/',
                 redirect: '/services',
-              },
-              {
-                path: '/admin',
-                name: 'admin',
-                icon: 'crown',
-                component: './Admin',
-                authority: ['admin'],
-                routes: [
-                  {
-                    path: '/admin/sub-page',
-                    name: 'sub-page',
-                    icon: 'smile',
-                    component: './Welcome',
-                    authority: ['admin'],
-                  },
-                ],
               },
               {
                 name: 'Services',
@@ -65,7 +54,7 @@
                 name: 'Company info',
                 icon: 'user',
                 path: '/profile',
-                component: './profile/advanced',
+                component: './Profile/basic',
               },
             ],
           },

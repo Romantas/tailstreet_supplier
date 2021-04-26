@@ -95,8 +95,12 @@ const Reservations: React.FC = () => {
 
   const columns: ProColumns<TableListItem>[] = [
     {
+      title: 'Date',
+      dataIndex: 'date',
+    },
+    {
       title: 'User',
-      dataIndex: 'name',
+      dataIndex: 'user',
       render: (dom, entity) => {
         return (
           <a
@@ -112,53 +116,20 @@ const Reservations: React.FC = () => {
     },
     {
       title: 'Service',
-      dataIndex: 'desc',
+      dataIndex: 'service',
       valueType: 'textarea',
     },
     {
-      title: <FormattedMessage id="duration" defaultMessage="Duration" />,
-      dataIndex: 'callNo',
+      title: 'Email',
+      dataIndex: 'email',
       sorter: true,
-      hideInForm: true,
-      renderText: (val: string) =>
-        `${val}${intl.formatMessage({
-          id: 'pages.searchTable.tenThousand',
-          defaultMessage: ' 万 ',
-        })}`,
     },
     {
-      title: <FormattedMessage id="cost" defaultMessage="Cost" />,
-      dataIndex: 'status',
-      hideInForm: true,
-      valueEnum: {
-        0: {
-          text: (
-            <FormattedMessage id="pages.searchTable.nameStatus.default" defaultMessage="关闭" />
-          ),
-          status: 'Default',
-        },
-        1: {
-          text: (
-            <FormattedMessage id="pages.searchTable.nameStatus.running" defaultMessage="运行中" />
-          ),
-          status: 'Processing',
-        },
-        2: {
-          text: (
-            <FormattedMessage id="pages.searchTable.nameStatus.online" defaultMessage="已上线" />
-          ),
-          status: 'Success',
-        },
-        3: {
-          text: (
-            <FormattedMessage id="pages.searchTable.nameStatus.abnormal" defaultMessage="异常" />
-          ),
-          status: 'Error',
-        },
-      },
+      title: 'Mobile',
+      dataIndex: 'mobile',
     },
     {
-      title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
+      title: 'Option',
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
@@ -185,9 +156,7 @@ const Reservations: React.FC = () => {
         })}
         actionRef={actionRef}
         rowKey="key"
-        search={{
-          labelWidth: 120,
-        }}
+        search={false}
         toolBarRender={() => [
           <Button
             type="primary"

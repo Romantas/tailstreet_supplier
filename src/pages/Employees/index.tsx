@@ -112,50 +112,14 @@ const Employees: React.FC = () => {
     },
     {
       title: 'Experience',
-      dataIndex: 'desc',
+      dataIndex: 'experience',
       valueType: 'textarea',
     },
     {
-      title: <FormattedMessage id="duration" defaultMessage="Duration" />,
-      dataIndex: 'callNo',
+      title: 'Services',
+      dataIndex: 'services',
       sorter: true,
-      hideInForm: true,
-      renderText: (val: string) =>
-        `${val}${intl.formatMessage({
-          id: 'pages.searchTable.tenThousand',
-          defaultMessage: ' 万 ',
-        })}`,
-    },
-    {
-      title: <FormattedMessage id="cost" defaultMessage="Cost" />,
-      dataIndex: 'status',
-      hideInForm: true,
-      valueEnum: {
-        0: {
-          text: (
-            <FormattedMessage id="pages.searchTable.nameStatus.default" defaultMessage="关闭" />
-          ),
-          status: 'Default',
-        },
-        1: {
-          text: (
-            <FormattedMessage id="pages.searchTable.nameStatus.running" defaultMessage="运行中" />
-          ),
-          status: 'Processing',
-        },
-        2: {
-          text: (
-            <FormattedMessage id="pages.searchTable.nameStatus.online" defaultMessage="已上线" />
-          ),
-          status: 'Success',
-        },
-        3: {
-          text: (
-            <FormattedMessage id="pages.searchTable.nameStatus.abnormal" defaultMessage="异常" />
-          ),
-          status: 'Error',
-        },
-      },
+      render: (value) => [<p>{`${value}, `}</p>],
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
@@ -178,15 +142,10 @@ const Employees: React.FC = () => {
   return (
     <GridContent>
       <ProTable<TableListItem>
-        headerTitle={intl.formatMessage({
-          id: 'pages.searchTable.title',
-          defaultMessage: '查询表格',
-        })}
+        headerTitle="Employee"
         actionRef={actionRef}
         rowKey="key"
-        search={{
-          labelWidth: 120,
-        }}
+        search={false}
         toolBarRender={() => [
           <Button
             type="primary"

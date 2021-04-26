@@ -1,7 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import type { Request, Response } from 'express';
-import { parse } from 'url';
-import type { TableListItem, TableListParams } from './data.d';
+import type { TableListItem } from './data.d';
 
 // mock tableListDataSource
 const genList = (current: number, pageSize: number) => {
@@ -33,66 +32,68 @@ const genList = (current: number, pageSize: number) => {
 
 let tableListDataSource = genList(1, 100);
 
-function getRule(req: Request, res: Response, u: string) {
-  let realUrl = u;
-  if (!realUrl || Object.prototype.toString.call(realUrl) !== '[object String]') {
-    realUrl = req.url;
-  }
-  const { current = 1, pageSize = 10 } = req.query;
-  const params = (parse(realUrl, true).query as unknown) as TableListParams;
-
-  let dataSource = [...tableListDataSource].slice(
-    ((current as number) - 1) * (pageSize as number),
-    (current as number) * (pageSize as number),
-  );
-  const sorter = JSON.parse(params.sorter as any);
-  if (sorter) {
-    dataSource = dataSource.sort((prev, next) => {
-      let sortNumber = 0;
-      Object.keys(sorter).forEach((key) => {
-        if (sorter[key] === 'descend') {
-          if (prev[key] - next[key] > 0) {
-            sortNumber += -1;
-          } else {
-            sortNumber += 1;
-          }
-          return;
-        }
-        if (prev[key] - next[key] > 0) {
-          sortNumber += 1;
-        } else {
-          sortNumber += -1;
-        }
-      });
-      return sortNumber;
-    });
-  }
-  if (params.filter) {
-    const filter = JSON.parse(params.filter as any) as Record<string, string[]>;
-    if (Object.keys(filter).length > 0) {
-      dataSource = dataSource.filter((item) => {
-        return Object.keys(filter).some((key) => {
-          if (!filter[key]) {
-            return true;
-          }
-          if (filter[key].includes(`${item[key]}`)) {
-            return true;
-          }
-          return false;
-        });
-      });
-    }
-  }
-
-  if (params.name) {
-    dataSource = dataSource.filter((data) => data.name.includes(params.name || ''));
-  }
+function getServices(req: Request, res: Response) {
+  const dataSource = [
+    {
+      name: 'Dog washing',
+      desc: 'Lorem Ipsum',
+      duration: '30 min.',
+      cost: '15 Eur.',
+    },
+    {
+      name: 'Cat washing',
+      desc: 'Lorem Ipsum',
+      duration: '30 min.',
+      cost: '15 Eur.',
+    },
+  ];
   const result = {
     data: dataSource,
-    total: tableListDataSource.length,
+    total: dataSource.length,
     success: true,
-    pageSize,
-    current: parseInt(`${params.currentPage}`, 10) || 1,
+    pageSize: 1,
+    current: parseInt('1', 10) || 1,
+  };
+
+  return res.json(result);
+}
+
+function getReservations(req: Request, res: Response) {
+  const dataSource = [
+    {
+      date: '2021/05/04 12:00',
+      user: 'Romantas Trumpa',
+      service: 'Dog washing',
+      email: 'romantas.trumpa@stud.vgtu.lt',
+      mobile: '+37067341238',
+    },
+  ];
+  const result = {
+    data: dataSource,
+    total: dataSource.length,
+    success: true,
+    pageSize: 1,
+    current: parseInt('1', 10) || 1,
+  };
+
+  return res.json(result);
+}
+
+function getEmployees(req: Request, res: Response) {
+  const dataSource = [
+    {
+      name: 'Greta Palubinskaite',
+      experience: 'šunų kirpimas - 1 metai',
+      services: ['dog washing', 'cat washing'],
+      mobile: '+37067341238',
+    },
+  ];
+  const result = {
+    data: dataSource,
+    total: dataSource.length,
+    success: true,
+    pageSize: 1,
+    current: parseInt('1', 10) || 1,
   };
 
   return res.json(result);
@@ -164,6 +165,8 @@ function postRule(req: Request, res: Response, u: string, b: Request) {
 }
 
 export default {
-  'GET /api/rule': getRule,
+  'GET /api/services': getServices,
+  'GET /api/reservations': getReservations,
+  'GET /api/employees': getEmployees,
   'POST /api/rule': postRule,
 };
