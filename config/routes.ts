@@ -54,7 +54,7 @@
                 name: 'Company info',
                 icon: 'user',
                 path: '/profile',
-                component: './Profile/basic',
+                component: './profile/basic',
               },
             ],
           },

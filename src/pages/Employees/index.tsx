@@ -1,17 +1,19 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, message, Drawer } from 'antd';
 import React, { useState, useRef } from 'react';
-import { useIntl, FormattedMessage } from 'umi';
+import { FormattedMessage } from 'umi';
 import { GridContent, FooterToolbar } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
+import { ModalForm, ProFormText, ProFormSelect } from '@ant-design/pro-form';
 import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import type { FormValueType } from './components/UpdateForm';
 import UpdateForm from './components/UpdateForm';
 import type { TableListItem } from './data';
 import { queryRule, updateRule, addRule, removeRule } from './service';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 /**
  * 添加节点
@@ -89,9 +91,6 @@ const Employees: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<TableListItem>();
   const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
-
-  /** 国际化配置 */
-  const intl = useIntl();
 
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -199,10 +198,7 @@ const Employees: React.FC = () => {
         </FooterToolbar>
       )}
       <ModalForm
-        title={intl.formatMessage({
-          id: 'pages.searchTable.createForm.newRule',
-          defaultMessage: '新建规则',
-        })}
+        title="Add a employee"
         width="400px"
         visible={createModalVisible}
         onVisibleChange={handleModalVisible}
@@ -228,10 +224,22 @@ const Employees: React.FC = () => {
               ),
             },
           ]}
-          width="md"
           name="name"
+          placeholder="Add name"
         />
-        <ProFormTextArea width="md" name="desc" />
+        <ProFormSelect
+          name="select"
+          valueEnum={{
+            china: 'China',
+            usa: 'U.S.A',
+          }}
+          fieldProps={{
+            mode: 'multiple',
+          }}
+          placeholder="Select a service"
+          rules={[{ required: true, message: 'Please select your country!' }]}
+        />
+        <ReactQuill theme="snow" placeholder="Add experience" />
       </ModalForm>
       <UpdateForm
         onSubmit={async (value) => {

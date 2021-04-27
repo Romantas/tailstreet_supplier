@@ -1,7 +1,8 @@
 import { Tag } from 'antd';
 import type { Settings as ProSettings } from '@ant-design/pro-layout';
 import React from 'react';
-import type { ConnectProps, connect } from 'umi';
+import type { ConnectProps } from 'umi';
+import { connect } from 'umi';
 import type { ConnectState } from '@/models/connect';
 import Avatar from './AvatarDropdown';
 import styles from './index.less';

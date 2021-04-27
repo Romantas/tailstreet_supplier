@@ -1,11 +1,11 @@
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, message, Drawer } from 'antd';
+import { Button, message, Drawer, DatePicker } from 'antd';
 import React, { useState, useRef } from 'react';
-import { useIntl, FormattedMessage } from 'umi';
+import { FormattedMessage } from 'umi';
 import { GridContent, FooterToolbar } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
+import { ModalForm, ProFormText, ProFormSelect } from '@ant-design/pro-form';
 import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import type { FormValueType } from './components/UpdateForm';
@@ -90,9 +90,6 @@ const Reservations: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<TableListItem>();
   const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
 
-  /** 国际化配置 */
-  const intl = useIntl();
-
   const columns: ProColumns<TableListItem>[] = [
     {
       title: 'Date',
@@ -150,10 +147,7 @@ const Reservations: React.FC = () => {
   return (
     <GridContent>
       <ProTable<TableListItem>
-        headerTitle={intl.formatMessage({
-          id: 'pages.searchTable.title',
-          defaultMessage: '查询表格',
-        })}
+        headerTitle="Reservations"
         actionRef={actionRef}
         rowKey="key"
         search={false}
@@ -210,11 +204,8 @@ const Reservations: React.FC = () => {
         </FooterToolbar>
       )}
       <ModalForm
-        title={intl.formatMessage({
-          id: 'pages.searchTable.createForm.newRule',
-          defaultMessage: '新建规则',
-        })}
-        width="400px"
+        title="Create a reservation"
+        width="720px"
         visible={createModalVisible}
         onVisibleChange={handleModalVisible}
         onFinish={async (value) => {
@@ -239,10 +230,50 @@ const Reservations: React.FC = () => {
               ),
             },
           ]}
-          width="md"
           name="name"
+          placeholder="Add user"
         />
-        <ProFormTextArea width="md" name="desc" />
+        <ProFormSelect
+          name="select"
+          label="Select"
+          valueEnum={{
+            china: 'China',
+            usa: 'U.S.A',
+          }}
+          placeholder="Select a service"
+          rules={[{ required: true, message: 'Please select your country!' }]}
+        />
+        <ProFormText
+          rules={[
+            {
+              required: true,
+              message: (
+                <FormattedMessage
+                  id="pages.searchTable.ruleName"
+                  defaultMessage="规则名称为必填项"
+                />
+              ),
+            },
+          ]}
+          name="email"
+          placeholder="Add email"
+        />
+        <ProFormText
+          rules={[
+            {
+              required: true,
+              message: (
+                <FormattedMessage
+                  id="pages.searchTable.ruleName"
+                  defaultMessage="规则名称为必填项"
+                />
+              ),
+            },
+          ]}
+          name="mobile"
+          placeholder="Add mobile"
+        />
+        <DatePicker size="large" renderExtraFooter={() => 'extra footer'} showTime />
       </ModalForm>
       <UpdateForm
         onSubmit={async (value) => {

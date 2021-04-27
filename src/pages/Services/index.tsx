@@ -1,17 +1,20 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, message, Drawer } from 'antd';
 import React, { useState, useRef } from 'react';
-import { useIntl, FormattedMessage } from 'umi';
+import { FormattedMessage } from 'umi';
 import { GridContent, FooterToolbar } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
+import { ModalForm, ProFormText } from '@ant-design/pro-form';
 import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import type { FormValueType } from './components/UpdateForm';
 import UpdateForm from './components/UpdateForm';
 import type { TableListItem } from './data';
 import { queryRule, updateRule, addRule, removeRule } from './service';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import './style.css';
 
 /**
  * 添加节点
@@ -89,9 +92,6 @@ const Services: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<TableListItem>();
   const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
-
-  /** 国际化配置 */
-  const intl = useIntl();
 
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -202,11 +202,8 @@ const Services: React.FC = () => {
         </FooterToolbar>
       )}
       <ModalForm
-        title={intl.formatMessage({
-          id: 'pages.searchTable.createForm.newRule',
-          defaultMessage: '新建规则',
-        })}
-        width="400px"
+        title="Service"
+        width="720px"
         visible={createModalVisible}
         onVisibleChange={handleModalVisible}
         onFinish={async (value) => {
@@ -231,10 +228,40 @@ const Services: React.FC = () => {
               ),
             },
           ]}
-          width="md"
           name="name"
+          placeholder="Service name"
         />
-        <ProFormTextArea width="md" name="desc" />
+        <ReactQuill style={{ marginBottom: 24, minHeight: 240 }} theme="snow" />
+        <ProFormText
+          rules={[
+            {
+              required: true,
+              message: (
+                <FormattedMessage
+                  id="pages.searchTable.ruleName"
+                  defaultMessage="规则名称为必填项"
+                />
+              ),
+            },
+          ]}
+          name="duration"
+          placeholder="Enter duration"
+        />
+        <ProFormText
+          rules={[
+            {
+              required: true,
+              message: (
+                <FormattedMessage
+                  id="pages.searchTable.ruleName"
+                  defaultMessage="规则名称为必填项"
+                />
+              ),
+            },
+          ]}
+          name="cost"
+          placeholder="Enter cost"
+        />
       </ModalForm>
       <UpdateForm
         onSubmit={async (value) => {
@@ -248,8 +275,8 @@ const Services: React.FC = () => {
           }
         }}
         onCancel={() => {
+          console.log('nx');
           handleUpdateModalVisible(false);
-          setCurrentRow(undefined);
         }}
         updateModalVisible={updateModalVisible}
         values={currentRow || {}}
