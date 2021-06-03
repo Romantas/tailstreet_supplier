@@ -1,10 +1,16 @@
-import request from '@/utils/request';
+import request from 'umi-request';
 import type { TableListParams, TableListItem } from './data';
 
-export async function queryRule(params?: TableListParams) {
-  return request('/api/services', {
-    params,
-  });
+export async function queryRule(id: number) {
+  const res = await request(`http://localhost:8080/api/v1/services/company/${id}`);
+
+  return {
+    current: 1,
+    data: res,
+    pageSize: 10,
+    success: true,
+    total: 10,
+  };
 }
 
 export async function removeRule(params: { key: number[] }) {
@@ -17,13 +23,11 @@ export async function removeRule(params: { key: number[] }) {
   });
 }
 
-export async function addRule(params: TableListItem) {
-  return request('/api/rule', {
+export async function addRule(data: TableListItem) {
+  const id = sessionStorage.getItem('id');
+  return await request(`http://localhost:8080/api/v1/services/company/${id}`, {
     method: 'POST',
-    data: {
-      ...params,
-      method: 'post',
-    },
+    data: { ...data },
   });
 }
 

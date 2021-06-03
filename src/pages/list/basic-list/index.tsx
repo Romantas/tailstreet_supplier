@@ -118,8 +118,8 @@ export const BasicList: FC<BasicListProps> = (props) => {
       Modal.confirm({
         title: '删除任务',
         content: '确定删除该任务吗？',
-        okText: '确认',
-        cancelText: '取消',
+        okText: 'Ok',
+        cancelText: 'Cancel',
         onOk: () => deleteItem(currentItem.id),
       });
     }

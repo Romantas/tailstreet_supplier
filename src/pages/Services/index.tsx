@@ -1,7 +1,7 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, message, Drawer } from 'antd';
 import React, { useState, useRef } from 'react';
-import { FormattedMessage } from 'umi';
+import { FormattedMessage, connect } from 'umi';
 import { GridContent, FooterToolbar } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
@@ -15,6 +15,8 @@ import { queryRule, updateRule, addRule, removeRule } from './service';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import './style.css';
+import type { CurrentUser } from '@/models/user';
+import type { ConnectState } from '@/models/connect';
 
 /**
  * 添加节点
@@ -22,15 +24,15 @@ import './style.css';
  * @param fields
  */
 const handleAdd = async (fields: TableListItem) => {
-  const hide = message.loading('正在添加');
+  const hide = message.loading('loading...');
   try {
-    await addRule({ ...fields });
+    await addRule(fields);
     hide();
-    message.success('添加成功');
+    message.success('created');
     return true;
   } catch (error) {
     hide();
-    message.error('添加失败请重试！');
+    message.error('Failed to create!');
     return false;
   }
 };
@@ -41,7 +43,7 @@ const handleAdd = async (fields: TableListItem) => {
  * @param fields
  */
 const handleUpdate = async (fields: FormValueType) => {
-  const hide = message.loading('正在配置');
+  const hide = message.loading('Loading...');
   try {
     await updateRule({
       name: fields.name,
@@ -50,11 +52,11 @@ const handleUpdate = async (fields: FormValueType) => {
     });
     hide();
 
-    message.success('配置成功');
+    message.success('Created');
     return true;
   } catch (error) {
     hide();
-    message.error('配置失败请重试！');
+    message.error('Error');
     return false;
   }
 };
@@ -81,14 +83,16 @@ const handleRemove = async (selectedRows: TableListItem[]) => {
   }
 };
 
-const Services: React.FC = () => {
+const Services: React.FC<{ currentUser: CurrentUser }> = ({ currentUser }) => {
   /** 新建窗口的弹窗 */
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   /** 分布更新窗口的弹窗 */
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
 
   const [showDetail, setShowDetail] = useState<boolean>(false);
+  const [description, setDescription] = useState();
 
+  const reactQuillRef = useRef();
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<TableListItem>();
   const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
@@ -96,7 +100,7 @@ const Services: React.FC = () => {
   const columns: ProColumns<TableListItem>[] = [
     {
       title: 'Service name',
-      dataIndex: 'name',
+      dataIndex: 'title',
       render: (dom, entity) => {
         return (
           <a
@@ -112,8 +116,8 @@ const Services: React.FC = () => {
     },
     {
       title: 'Description',
-      dataIndex: 'desc',
-      valueType: 'textarea',
+      dataIndex: 'description',
+      render: (item) => <div dangerouslySetInnerHTML={{ __html: item }} />,
     },
     {
       title: 'Duration',
@@ -142,6 +146,10 @@ const Services: React.FC = () => {
     },
   ];
 
+  const handleChange = (e) => {
+    setDescription(e);
+  };
+
   return (
     <GridContent>
       <ProTable<TableListItem>
@@ -160,14 +168,22 @@ const Services: React.FC = () => {
             <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="新建" />
           </Button>,
         ]}
-        request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
+        request={() => {
+          return queryRule(Number(sessionStorage.getItem('id')));
+        }}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => {
             setSelectedRows(selectedRows);
           },
         }}
+        pagination={{
+          showTotal: (total, range) => (
+            <div>{`showing ${range[0]}-${range[1]} of ${total} total items`}</div>
+          ),
+        }}
       />
+
       {selectedRowsState?.length > 0 && (
         <FooterToolbar
           extra={
@@ -206,8 +222,15 @@ const Services: React.FC = () => {
         width="720px"
         visible={createModalVisible}
         onVisibleChange={handleModalVisible}
+        modalProps={{
+          cancelText: 'Cancel',
+          okText: 'Ok',
+        }}
         onFinish={async (value) => {
-          const success = await handleAdd(value as TableListItem);
+          const success = await handleAdd({
+            ...(value as TableListItem),
+            description: description,
+          });
           if (success) {
             handleModalVisible(false);
             if (actionRef.current) {
@@ -228,10 +251,15 @@ const Services: React.FC = () => {
               ),
             },
           ]}
-          name="name"
+          name="title"
           placeholder="Service name"
         />
-        <ReactQuill style={{ marginBottom: 24, minHeight: 240 }} theme="snow" />
+        <ReactQuill
+          style={{ marginBottom: 24, minHeight: 240 }}
+          theme="snow"
+          placeholder="Write Something about your service"
+          onChange={handleChange}
+        />
         <ProFormText
           rules={[
             {
@@ -245,7 +273,7 @@ const Services: React.FC = () => {
             },
           ]}
           name="duration"
-          placeholder="Enter duration"
+          placeholder="Enter duration (in minutes)"
         />
         <ProFormText
           rules={[
@@ -275,7 +303,6 @@ const Services: React.FC = () => {
           }
         }}
         onCancel={() => {
-          console.log('nx');
           handleUpdateModalVisible(false);
         }}
         updateModalVisible={updateModalVisible}
@@ -308,5 +335,6 @@ const Services: React.FC = () => {
     </GridContent>
   );
 };
-
-export default Services;
+export default connect(({ user }: ConnectState) => ({
+  currentUser: user.currentUser,
+}))(Services);

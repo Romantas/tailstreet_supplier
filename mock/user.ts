@@ -19,7 +19,7 @@ export default {
   'GET /api/currentUser': {
     name: 'Dog re-look',
     avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
-    userid: '00000001',
+    userid: '7',
     email: 'antdesign@alipay.com',
     signature: '海纳百川，有容乃大',
     title: '交互专家',

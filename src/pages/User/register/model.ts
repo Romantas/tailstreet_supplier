@@ -5,6 +5,7 @@ import { fakeRegister } from './service';
 export type StateType = {
   status?: 'ok' | 'error';
   currentAuthority?: 'user' | 'guest' | 'admin';
+  user: Record<string, number | string>;
 };
 
 export type ModelType = {
@@ -23,6 +24,7 @@ const Model: ModelType = {
 
   state: {
     status: undefined,
+    user: {},
   },
 
   effects: {
@@ -40,6 +42,7 @@ const Model: ModelType = {
       return {
         ...state,
         status: payload.status,
+        user: payload.data,
       };
     },
   },

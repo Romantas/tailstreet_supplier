@@ -1,9 +1,23 @@
-import request from '@/utils/request';
+import request from 'umi-request';
 import type { TableListParams, TableListItem } from './data';
 
-export async function queryRule(params?: TableListParams) {
-  return request('/api/reservations', {
-    params,
+export async function queryRule(id: number) {
+  const res = await request(`http://localhost:8080/api/v1/reservations/company/${id}`);
+
+  return {
+    current: 1,
+    data: res,
+    pageSize: 10,
+    success: true,
+    total: 10,
+  };
+}
+
+export async function updateStatus(status: string) {
+  const id = sessionStorage.getItem('id');
+  location.reload();
+  return await request(`http://localhost:8080/api/v1/reservations/status/${status}/${id}`, {
+    method: 'PUT',
   });
 }
 

@@ -11,7 +11,8 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 import type { FormValueType } from './components/UpdateForm';
 import UpdateForm from './components/UpdateForm';
 import type { TableListItem } from './data';
-import { queryRule, updateRule, addRule, removeRule } from './service';
+import { queryRule, updateRule, addRule, removeRule, updateStatus } from './service';
+import moment from 'moment';
 
 /**
  * 添加节点
@@ -94,53 +95,57 @@ const Reservations: React.FC = () => {
     {
       title: 'Date',
       dataIndex: 'date',
+      render: (e: any) => moment(e).format('yyyy-MM-DD'),
     },
     {
       title: 'User',
       dataIndex: 'user',
-      render: (dom, entity) => {
-        return (
-          <a
-            onClick={() => {
-              setCurrentRow(entity);
-              setShowDetail(true);
-            }}
-          >
-            {dom}
-          </a>
-        );
-      },
+      render: (e: any) => `${e.name} ${e.lastName}`,
     },
     {
       title: 'Service',
       dataIndex: 'service',
       valueType: 'textarea',
+      render: (e: any) => e.title,
     },
     {
       title: 'Email',
-      dataIndex: 'email',
+      dataIndex: 'user',
       sorter: true,
+      render: (e: any) => e.email,
     },
     {
       title: 'Mobile',
-      dataIndex: 'mobile',
+      dataIndex: 'user',
+      render: (e: any) => e.phone,
     },
     {
       title: 'Option',
-      dataIndex: 'option',
+      dataIndex: 'accepted',
       valueType: 'option',
-      render: (_, record) => [
-        <a
-          key="config"
-          onClick={() => {
-            handleUpdateModalVisible(true);
-            setCurrentRow(record);
-          }}
-        >
-          Accept
-        </a>,
-        <a>Decline</a>,
-      ],
+      render: (_, record) => {
+        console.log(record.accepted);
+        if (record.accepted === null) {
+          return [
+            <Button key="config" onClick={() => updateStatus('accepted')}>
+              Accept
+            </Button>,
+            <Button onClick={() => updateStatus('accepted')}>Decline</Button>,
+          ];
+        } else if (record.accepted == 0) {
+          return [
+            <Button danger key="config">
+              Declined
+            </Button>,
+          ];
+        } else {
+          return [
+            <Button key="config" style={{ borderColor: 'green', color: 'green' }}>
+              Accepted
+            </Button>,
+          ];
+        }
+      },
     },
   ];
 
@@ -162,7 +167,7 @@ const Reservations: React.FC = () => {
             <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="新建" />
           </Button>,
         ]}
-        request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
+        request={() => queryRule(Number(sessionStorage.getItem('id')))}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => {
@@ -208,6 +213,10 @@ const Reservations: React.FC = () => {
         width="720px"
         visible={createModalVisible}
         onVisibleChange={handleModalVisible}
+        modalProps={{
+          cancelText: 'Cancel',
+          okText: 'Ok',
+        }}
         onFinish={async (value) => {
           const success = await handleAdd(value as TableListItem);
           if (success) {

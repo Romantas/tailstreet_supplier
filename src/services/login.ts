@@ -1,4 +1,4 @@
-import request from '@/utils/request';
+import request from 'umi-request';
 
 export type LoginParamsType = {
   userName: string;
@@ -8,10 +8,17 @@ export type LoginParamsType = {
 };
 
 export async function fakeAccountLogin(params: LoginParamsType) {
-  return request('/api/login/account', {
+  const res = await request('http://localhost:8080/api/v1/users/company/login', {
     method: 'POST',
-    data: params,
+    data: { password: params.password, email: params.userName },
   });
+  sessionStorage.setItem('id', res.company.id);
+  console.log(res);
+  return {
+    status: 'ok',
+    type: 'account',
+    currentAuthority: 'admin',
+  };
 }
 
 export async function getFakeCaptcha(mobile: string) {

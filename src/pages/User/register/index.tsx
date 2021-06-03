@@ -64,9 +64,10 @@ const Register: FC<RegisterProps> = ({ submitting, dispatch, userAndregister }) 
     }
     const account = form.getFieldValue('mail');
     if (userAndregister.status === 'ok') {
-      message.success('注册成功！');
+      console.log(userAndregister);
+      message.success('Success');
       history.push({
-        pathname: '/user/register-result',
+        pathname: '/profile',
         state: {
           account,
         },
@@ -147,7 +148,7 @@ const Register: FC<RegisterProps> = ({ submitting, dispatch, userAndregister }) 
       </h3>
       <Form form={form} name="UserRegister" onFinish={onFinish}>
         <FormItem
-          name="mail"
+          name="email"
           rules={[
             {
               required: true,
@@ -232,7 +233,7 @@ const Register: FC<RegisterProps> = ({ submitting, dispatch, userAndregister }) 
               message: formatMessage({ id: 'userandregister.phone-number.required' }),
             },
             {
-              pattern: /^\d{11}$/,
+              pattern: /^\d{8}$/,
               message: formatMessage({ id: 'userandregister.phone-number.wrong-format' }),
             },
           ]}

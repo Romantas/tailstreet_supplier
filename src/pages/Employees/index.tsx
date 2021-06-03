@@ -1,6 +1,6 @@
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, message, Drawer } from 'antd';
-import React, { useState, useRef } from 'react';
+import { Button, message, Drawer, DatePicker, TimePicker } from 'antd';
+import React, { useState, useRef, useEffect } from 'react';
 import { FormattedMessage } from 'umi';
 import { GridContent, FooterToolbar } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
@@ -11,9 +11,10 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 import type { FormValueType } from './components/UpdateForm';
 import UpdateForm from './components/UpdateForm';
 import type { TableListItem } from './data';
-import { queryRule, updateRule, addRule, removeRule } from './service';
+import { queryRule, updateRule, addRule, removeRule, queryServices } from './service';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import moment from 'moment';
 
 /**
  * 添加节点
@@ -21,15 +22,15 @@ import 'react-quill/dist/quill.snow.css';
  * @param fields
  */
 const handleAdd = async (fields: TableListItem) => {
-  const hide = message.loading('正在添加');
+  const hide = message.loading('Loading...');
   try {
     await addRule({ ...fields });
     hide();
-    message.success('添加成功');
+    message.success('Success');
     return true;
   } catch (error) {
     hide();
-    message.error('添加失败请重试！');
+    message.error('Error!');
     return false;
   }
 };
@@ -87,10 +88,37 @@ const Employees: React.FC = () => {
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
 
   const [showDetail, setShowDetail] = useState<boolean>(false);
+  const [services, setServices] = useState([]);
+  const [description, setDescription] = useState();
+  const [date, setDate] = useState(null);
+  const [time, setTime] = useState(null);
 
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<TableListItem>();
   const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
+
+  useEffect(() => {
+    queryServices().then((res) =>
+      setServices(
+        res.map((i) => {
+          return { label: i.title, value: i.id };
+        }),
+      ),
+    );
+  }, []);
+
+  const disabledDate = (current) => {
+    // Can not select days before today and today
+    return current && current < moment().endOf('day');
+  };
+
+  const onDateChange = (date) => {
+    setDate(date);
+  };
+
+  const onTimeChange = (time) => {
+    setTime(time);
+  };
 
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -113,12 +141,15 @@ const Employees: React.FC = () => {
       title: 'Experience',
       dataIndex: 'experience',
       valueType: 'textarea',
+      render: (value) => <div dangerouslySetInnerHTML={{ __html: value }} />,
     },
     {
       title: 'Services',
       dataIndex: 'services',
       sorter: true,
-      render: (value) => [<p>{`${value}, `}</p>],
+      render: (value) => {
+        return value?.map((i) => <p key={i.title}>{i.title}, </p>);
+      },
     },
     {
       title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="操作" />,
@@ -156,7 +187,7 @@ const Employees: React.FC = () => {
             <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="新建" />
           </Button>,
         ]}
-        request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
+        request={() => queryRule(Number(sessionStorage.getItem('id')))}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => {
@@ -202,8 +233,17 @@ const Employees: React.FC = () => {
         width="400px"
         visible={createModalVisible}
         onVisibleChange={handleModalVisible}
+        modalProps={{
+          cancelText: 'Cancel',
+          okText: 'Ok',
+        }}
         onFinish={async (value) => {
-          const success = await handleAdd(value as TableListItem);
+          const success = await handleAdd({
+            ...(value as TableListItem),
+            experience: description,
+            date: date,
+            time: time,
+          });
           if (success) {
             handleModalVisible(false);
             if (actionRef.current) {
@@ -227,19 +267,47 @@ const Employees: React.FC = () => {
           name="name"
           placeholder="Add name"
         />
+        <ProFormText
+          rules={[
+            {
+              required: true,
+              message: (
+                <FormattedMessage
+                  id="pages.searchTable.ruleName"
+                  defaultMessage="规则名称为必填项"
+                />
+              ),
+            },
+          ]}
+          name="lastName"
+          placeholder="Add last name"
+        />
         <ProFormSelect
           name="select"
-          valueEnum={{
-            china: 'China',
-            usa: 'U.S.A',
-          }}
+          options={services}
           fieldProps={{
             mode: 'multiple',
           }}
           placeholder="Select a service"
           rules={[{ required: true, message: 'Please select your country!' }]}
         />
-        <ReactQuill theme="snow" placeholder="Add experience" />
+        <DatePicker.RangePicker
+          name="date"
+          style={{ marginBottom: '24px', width: '100%' }}
+          placeholder={['start date', 'end date']}
+          disabledDate={disabledDate}
+          value={date}
+          onChange={onDateChange}
+        />
+        <TimePicker.RangePicker
+          name="time"
+          style={{ marginBottom: '24px', width: '100%' }}
+          format="HH:mm"
+          minuteStep={30}
+          value={time}
+          onChange={onTimeChange}
+        />
+        <ReactQuill theme="snow" placeholder="Add experience" onChange={(e) => setDescription(e)} />
       </ModalForm>
       <UpdateForm
         onSubmit={async (value) => {

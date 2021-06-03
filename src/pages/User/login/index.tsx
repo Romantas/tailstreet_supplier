@@ -51,9 +51,12 @@ const Login: React.FC<LoginProps> = (props) => {
           autoLogin: true,
         }}
         submitter={{
+          searchConfig: {
+            submitText: 'Login',
+          },
           render: (_, dom) => dom.pop(),
           submitButtonProps: {
-            title: 'Login',
+            children: 'Login',
             loading: submitting,
             size: 'large',
             style: {
@@ -82,10 +85,7 @@ const Login: React.FC<LoginProps> = (props) => {
                 size: 'large',
                 prefix: <UserOutlined className={styles.prefixIcon} />,
               }}
-              placeholder={intl.formatMessage({
-                id: 'pages.login.username.placeholder',
-                defaultMessage: '用户名: admin or user',
-              })}
+              placeholder="Email"
               rules={[
                 {
                   required: true,
@@ -104,10 +104,7 @@ const Login: React.FC<LoginProps> = (props) => {
                 size: 'large',
                 prefix: <LockOutlined className={styles.prefixIcon} />,
               }}
-              placeholder={intl.formatMessage({
-                id: 'pages.login.password.placeholder',
-                defaultMessage: '密码: ant.design',
-              })}
+              placeholder="Password"
               rules={[
                 {
                   required: true,
