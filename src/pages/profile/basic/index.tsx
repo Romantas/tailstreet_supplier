@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import { GridContent } from '@ant-design/pro-layout';
-import { Form, Card, Input, Row, Col, Upload, Button } from 'antd';
+import { Form, Card, Input, Row, Col, Upload, Button, message } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 import type { CurrentUser, Dispatch } from 'umi';
 import { connect } from 'umi';
@@ -64,7 +64,9 @@ class Basic extends Component<BasicProps, BasicState> {
       })
       .then((res) => {
         sessionStorage.setItem('id', res.id);
+        sessionStorage.setItem('name', res.name);
       });
+    message.success('Success');
   };
 
   render() {

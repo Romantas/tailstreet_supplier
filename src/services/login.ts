@@ -12,9 +12,12 @@ export async function fakeAccountLogin(params: LoginParamsType) {
     method: 'POST',
     data: { password: params.password, email: params.userName },
   });
-  console.log(res.id);
+  console.log(res);
   sessionStorage.setItem('id', res?.company?.id || 0);
   sessionStorage.setItem('userId', res.id);
+  if (res?.company) {
+    sessionStorage.setItem('name', res?.company.name);
+  }
   return {
     id: res.id,
     status: 'ok',

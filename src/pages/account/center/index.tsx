@@ -202,6 +202,8 @@ class Center extends Component<CenterProps, CenterState> {
     const { tabKey } = this.state;
     const { currentUser = {}, currentUserLoading } = this.props;
     const dataLoading = currentUserLoading || !(currentUser && Object.keys(currentUser).length);
+    const name = sessionStorage.getItem('name');
+    console.log(name);
     return (
       <GridContent>
         <Row gutter={24}>
@@ -211,7 +213,6 @@ class Center extends Component<CenterProps, CenterState> {
                 <div>
                   <div className={styles.avatarHolder}>
                     <img alt="" src={currentUser.avatar} />
-                    <div className={styles.name}>{currentUser.name}</div>
                     <div>{currentUser.signature}</div>
                   </div>
                   {this.renderUserInfo(currentUser)}
