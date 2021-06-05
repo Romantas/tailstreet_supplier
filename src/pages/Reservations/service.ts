@@ -2,7 +2,7 @@ import request from 'umi-request';
 import type { TableListParams, TableListItem } from './data';
 
 export async function queryRule(id: number) {
-  const res = await request(`http://api.tailstreet.com/api/v1/reservations/company/${id}`);
+  const res = await request(`https://api.tailstreet.com/api/v1/reservations/company/${id}`);
 
   return {
     current: 1,
@@ -16,7 +16,7 @@ export async function queryRule(id: number) {
 export async function updateStatus(status: string) {
   const id = sessionStorage.getItem('id');
   location.reload();
-  return await request(`http://api.tailstreet.com/api/v1/reservations/status/${status}/${id}`, {
+  return await request(`https://api.tailstreet.com/api/v1/reservations/status/${status}/${id}`, {
     method: 'PUT',
   });
 }

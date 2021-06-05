@@ -2,7 +2,7 @@ import request from 'umi-request';
 import type { TableListParams, TableListItem } from './data';
 
 export async function queryRule(id: number) {
-  const res = await request(`http://api.tailstreet.com/api/v1/employees/services/${id}`);
+  const res = await request(`https://api.tailstreet.com/api/v1/employees/services/${id}`);
 
   return {
     current: 1,
@@ -25,14 +25,14 @@ export async function removeRule(params: { key: number[] }) {
 
 export async function queryServices() {
   const id = sessionStorage.getItem('id');
-  return await request(`http://api.tailstreet.com/api/v1/services/company/${id}`);
+  return await request(`https://api.tailstreet.com/api/v1/services/company/${id}`);
 }
 
 export async function addRule(params: TableListItem) {
   const id = sessionStorage.getItem('id');
   const date = params.date.map((i) => i.format('YYYY-MM-DD'));
   const time = params.time.map((i) => i.format('HH:mm:ss'));
-  return await request(`http://api.tailstreet.com/api/v1/employees`, {
+  return await request(`https://api.tailstreet.com/api/v1/employees`, {
     method: 'POST',
     data: { ...params, companyId: id, date: date, time: time },
   });

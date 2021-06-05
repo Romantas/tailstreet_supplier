@@ -8,7 +8,7 @@ export type LoginParamsType = {
 };
 
 export async function fakeAccountLogin(params: LoginParamsType) {
-  const res = await request('http://api.tailstreet.com/api/v1/users/company/login', {
+  const res = await request('https://api.tailstreet.com/api/v1/users/company/login', {
     method: 'POST',
     data: { password: params.password, email: params.userName },
   });
