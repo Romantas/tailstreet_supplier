@@ -5,7 +5,7 @@ export async function queryBasicProfile() {
 }
 
 export async function addCompanyInfo(id: number, data: any) {
-  return await fetch(`http://localhost:8080/api/v1/company-info/${id}`, {
+  return await fetch(`http://api.tailstreet.com/api/v1/company-info/${id}`, {
     method: 'POST',
     body: data,
   });
