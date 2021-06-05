@@ -124,13 +124,12 @@ const Reservations: React.FC = () => {
       dataIndex: 'accepted',
       valueType: 'option',
       render: (_, record) => {
-        console.log(record.accepted);
         if (record.accepted === null) {
           return [
-            <Button key="config" onClick={() => updateStatus('accepted')}>
+            <Button key="config" onClick={() => updateStatus(record.id, 'accepted')}>
               Accept
             </Button>,
-            <Button onClick={() => updateStatus('accepted')}>Decline</Button>,
+            <Button onClick={() => updateStatus(record.id, 'accepted')}>Decline</Button>,
           ];
         } else if (record.accepted == 0) {
           return [
@@ -173,6 +172,11 @@ const Reservations: React.FC = () => {
           onChange: (_, selectedRows) => {
             setSelectedRows(selectedRows);
           },
+        }}
+        pagination={{
+          showTotal: (total, range) => (
+            <div>{`showing ${range[0]}-${range[1]} of ${total} total items`}</div>
+          ),
         }}
       />
       {selectedRowsState?.length > 0 && (

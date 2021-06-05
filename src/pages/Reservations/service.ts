@@ -13,8 +13,7 @@ export async function queryRule(id: number) {
   };
 }
 
-export async function updateStatus(status: string) {
-  const id = sessionStorage.getItem('id');
+export async function updateStatus(id: string, status: string) {
   location.reload();
   return await request(`https://api.tailstreet.com/api/v1/reservations/status/${status}/${id}`, {
     method: 'PUT',

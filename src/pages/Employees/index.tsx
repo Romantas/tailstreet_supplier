@@ -194,6 +194,11 @@ const Employees: React.FC = () => {
             setSelectedRows(selectedRows);
           },
         }}
+        pagination={{
+          showTotal: (total, range) => (
+            <div>{`showing ${range[0]}-${range[1]} of ${total} total items`}</div>
+          ),
+        }}
       />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar
