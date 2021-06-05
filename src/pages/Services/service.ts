@@ -2,7 +2,7 @@ import request from 'umi-request';
 import type { TableListParams, TableListItem } from './data';
 
 export async function queryRule(id: number) {
-  const res = await request(`http://localhost:8080/api/v1/services/company/${id}`);
+  const res = await request(`http://api.tailstreet.com/api/v1/services/company/${id}`);
 
   return {
     current: 1,
@@ -25,7 +25,7 @@ export async function removeRule(params: { key: number[] }) {
 
 export async function addRule(data: TableListItem) {
   const id = sessionStorage.getItem('id');
-  return await request(`http://localhost:8080/api/v1/services/company/${id}`, {
+  return await request(`http://api.tailstreet.com/api/v1/services/company/${id}`, {
     method: 'POST',
     data: { ...data },
   });
